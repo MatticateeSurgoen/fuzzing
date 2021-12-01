@@ -12,7 +12,8 @@
 #include <stddef.h>
 
 // Create sha256 hash from a file supplied file content
-void sha256_filecontent(wchar_t* inp, char *outputBuffer, size_t filesize)
+void 
+sha256_filecontent(wchar_t* inp, char *outputBuffer, size_t filesize)
 {
 	// stores the hash 
 	unsigned char hash[SHA256_DIGEST_LENGTH];
@@ -34,8 +35,24 @@ void sha256_filecontent(wchar_t* inp, char *outputBuffer, size_t filesize)
 	outputBuffer[64] = '\0';
 }
 
-int
-main(int argc, char** argv)
+// fuzz the input in objdump program
+void 
+fuzz()
 {
 	
 }
+
+// worker
+void 
+worker
+{
+	
+}
+
+int
+main(int argc, char** argv)
+{
+	setbuf(NULL, stdout);
+}
+
+
