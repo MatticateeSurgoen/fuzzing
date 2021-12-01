@@ -1,5 +1,5 @@
 #!/usr/bin/env	python3
-import glob, subprocess, random, time, threading, os, hashlib, multithreading
+import glob, subprocess, random, time, threading, os, hashlib
 
 # Run one fuzz case with provided input (which is a  byte array)
 def fuzz(thr_id: int, inp: bytearray):
@@ -36,8 +36,8 @@ corpus_files = glob.glob("corpus/*")
 # Load the corpus files into memory
 corpus = set()
 
-for filename in corpus_filenames:
-	corpus.add(open(filename, "rb").read()
+for filename in corpus_files:
+	corpus.add(open(filename, "rb").read())
 
 # Convert the corpus back into a list as we're done with the set for deduping
 # inputs which were not unique
@@ -55,10 +55,10 @@ def worker(thr_id):
 		inp = bytearray(random.choice(corpus))
 
 		for _ in range(random.randint(1, 8)):
-			inp[random.randint(0, len(inp))] = random.randin(0, 255)
+			inp[random.randint(0, len(inp))] = random.randint(0, 255)
 
 		# Pick a random input from our corpus
-		fuzz(thr_id, inp)
+		fuzz(int(thr_id), bytearray(inp))
 
 		# Update number of fuzz cases
 		cases += 1
@@ -71,7 +71,8 @@ def worker(thr_id):
 
 		print(f"[{elapsed:10.4f}] cases {cases:10} | fcps {fcps:10.4f}")
 
-for thr_id in range(192):
+
+for thr_id in range(1):
 	threading.Thread(target=worker, args[thr_id]).start()
 
 while threading.active.count() > 0:
