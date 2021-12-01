@@ -12,7 +12,7 @@ def fuzz(thr_id: int, inp: bytearray):
 		fd.write(inp)
 
 	# Run objdump until completion
-	sp = subprocess.Popen("./objdump", "-x", tmpfn)
+	sp = subprocess.Popen("./objdump", "-x", tmpfn,
 		stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 	ret = sp.wait()
@@ -45,3 +45,34 @@ corpus = list(map(bytearray, corpus))
 
 # Get the time at the start of the fuzzer
 start = time.time()
+
+# total number of fuzz cases
+cases = 0
+def worker(thr_id):
+	global start, corpus, cases
+	while True:
+		# Create a copy of an existing input from the corpus
+		inp = bytearray(random.choice(corpus))
+
+		for _ in range(random.randint(1, 8)):
+			inp[random.randint(0, len(inp))] = random.randin(0, 255)
+
+		# Pick a random input from our corpus
+		fuzz(thr_id, inp)
+
+		# Update number of fuzz cases
+		cases += 1
+
+		# Determine the amount of seconds we have been fuzzing for
+		elapsed = time.time() - start
+
+		# Determine the number of fuzz cases per seconds
+		fcps = float(cases) / elapsed
+
+		print(f"[{elapsed:10.4f}] cases {cases:10} | fcps {fcps:10.4f}")
+
+for thr_id in range(192):
+	threading.Thread(target=worker, args[thr_id]).start()
+
+while threading.active.count() > 0:
+	time.sleep(0.1)
