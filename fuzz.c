@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -11,9 +10,16 @@
 #include <getopt.h>
 #include <stddef.h>
 
+#define errExit(msg) do { \
+  perror(msg);            \
+  exit(EXIT_FAILURE);     \
+} while(0)
+
+
 // Create sha256 hash from a file supplied file content
-void 
-sha256_filecontent(wchar_t* inp, char *outputBuffer, size_t filesize)
+// output 64 character hash from computed input and
+// store it in outputBuffer
+static void sha256_filecontent(wchar_t* inp, char *outputBuffer, size_t filesize)
 {
 	// stores the hash 
 	unsigned char hash[SHA256_DIGEST_LENGTH];
@@ -35,49 +41,61 @@ sha256_filecontent(wchar_t* inp, char *outputBuffer, size_t filesize)
 	outputBuffer[64] = '\0';
 }
 
-/* 
-maps file in memory
-copy data file in memory
-and write address to 
-*/
-void* mmem(char* param)
+// compare data of two iovec structure
+// returns true if buffer is of same size and content
+// in the buffer is identical else return false
+bool compare_data(struct iovec *dest, struct iovec *src)
 {
-    // open file with read only option
-    int fd = open(param, O_RDONLY);
-    if (fd == -1) 
-    {   
-        perror("program doesn't able to map file in memory\n");
-        exit(EXIT_FAILURE);
-    }   
+  if (dest->iov_len == src->iov_len)
+    return false;
 
-    // seek to end of file  measuring size
-    size_t size = lseek(fd, 0, SEEK_END);
+  // compares content of buffers
+  if (!memcmp(dest->iov_base, src->iov_base, src->iov_len))
+    return true;
 
-    // seek  back to offset 0
-    lseek(fd, 0, SEEK_SET);
+  // comparsion failed 
+  return false;
+}
+ 
 
-    // map file in with mmap
-    if ((addr = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0)) == MAP_FAILED)
-    {   
-        perror("not able to map in memory mmap error\n");
-        exit(EXIT_FAILURE);
-    }   
-    close(fd);
+// open file supplied with a given file name
+// and map file in memory with malloc then
+// return iovec struct containing buffer and 
+// buffer length
+static struct iovec* mmem(char* param)
+{
+  struct iovec *file_data;
+  int fild;
 
-    return (void*)&addr;
+  file_data = malloc(sizeof(struct iovec));
+  assert(file_data != NULL);
+
+  // open file with read only option
+  fild = open(param, O_RDONLY);
+  assert (fild > 0);
+
+  // seek to end of file  measuring size
+  file_data->iov_len = lseek(fild, 0, SEEK_END);
+
+  // seek  back to offset 0
+  lseek(fild, 0, SEEK_SET);
+
+  file_data->iov_base = malloc(size * sizeof(char));
+  if (file_data->iov_base == NULL)
+    errExit("InSufficient memory is available to map file in memory :(");
+
+  return file_data;
 }
 
 
 // fuzz the input in objdump program
-void 
-fuzz()
+void fuzz()
 {
 	
 }
 
 // worker
-void 
-worker
+void worker()
 {
 	
 }
