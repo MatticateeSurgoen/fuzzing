@@ -1,0 +1,17 @@
+Security Reasearch is about Failing.
+Public Reasearch For fuzzing assumes couple of 
+things that is 
+  1) You are working on Linux
+  2) You are working on System where AFL works
+  3) You have fork
+  4) You have source to the code base
+  5) You have capable build system that is for building it.
+  6) You have capable build system that is for building it
+    and you have easy to replace compilers.
+
+If you have above things than you can build a 
+instrumentation binary else you are force to
+use QEMU or AFL QEMU. it is worst experience 
+just AFL.
+
+
