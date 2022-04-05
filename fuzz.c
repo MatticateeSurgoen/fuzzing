@@ -19,7 +19,7 @@
 // Create sha256 hash from a file supplied file content
 // output 64 character hash from computed input and
 // store it in outputBuffer
-static void sha256_filecontent(wchar_t* inp, char *outputBuffer, size_t filesize)
+static void sha256_filecontent(struct iovec* iov_file, unsigned char *outputBuffer)
 {
 	// stores the hash 
 	unsigned char hash[SHA256_DIGEST_LENGTH];
@@ -31,10 +31,10 @@ static void sha256_filecontent(wchar_t* inp, char *outputBuffer, size_t filesize
 	SHA256_Init(&sha256);
 
 	// update sha256 with our input string
-	SHA256_Update(&sha256, inp, filesize);
+	SHA256_Update(&sha256, iov_file->iov_base, iov_file->iov_len);
 	
 	// Generate hex value from character bytes
-	for (register int i = 0; i < SHA256_DIGEST_LENGTH; i++)
+	for (unsigned i = 0; i < SHA256_DIGEST_LENGTH; i++)
 	{
 		sprintf(outputBuffer + (i * 2), "%02x", hash[i]);
 	}
@@ -62,7 +62,7 @@ bool compare_data(struct iovec *dest, struct iovec *src)
 // and map file in memory with malloc then
 // return iovec struct containing buffer and 
 // buffer length
-static struct iovec* mmem(char* param)
+static struct iovec* getFileContext(char* param)
 {
   struct iovec *file_data;
   int fild;
@@ -89,21 +89,19 @@ static struct iovec* mmem(char* param)
 
 
 // fuzz the input in objdump program
-void fuzz()
+static void fuzz()
 {
+  char tmpfn[256];
 	
 }
 
 // worker
-void worker()
+static void worker()
 {
 	
 }
 
-int
-main(int argc, char** argv)
+int main(int argc, char** argv)
 {
-	setbuf(NULL, stdout);
+  return 0;
 }
-
-

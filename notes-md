@@ -14,4 +14,46 @@ instrumentation binary else you are force to
 use QEMU or AFL QEMU. it is worst experience 
 just AFL.
 
+Harness: harness is a part of program that 
+execute the program that examines crashes.
 
+Corpus: corpus contain files that are been loaded
+by target program to execute.
+
+Statistic: Understand performance of the fuzzer 
+it's very very important. 
+
+One thing that is important that we cannot thread
+things which we did sometimes running multiple
+copies of the program maybe sometime it puts a lock
+file to the disk, maybe gets setting file which canopened
+in multiple threads, maybe itgets changed, and our
+case objdump is stand alone program, 
+Fallback to emulation. 
+
+Live machine running 
+
+Find bug in old software which is used by many people and
+is been not been fuzzby many people.
+
+Getting Job done...
+
+Decrease number of system call by modifying source code 
+to increase the performance
+
+Unique crash in Afl means  unique path to the bug.
+
+                    main----------------------------------
+                  /     \                                |
+                 /       \                               |
+                /         \                              |
+               v           v                             |
+            -----        ------                          |
+            | A |        | B  |                          |
+            -----        ------                          |
+                                                         |
+            ----------------------                       |
+            | Read byte from obb |                       |
+            ----------------------                       |
+                    |                                    |
+                    --------------------------------------
